@@ -1,0 +1,6 @@
+@LudusApp_HostAddress = http://localhost:5218
+
+GET {{LudusApp_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
