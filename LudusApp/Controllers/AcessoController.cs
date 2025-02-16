@@ -11,7 +11,7 @@ public class AcessoController : ControllerBase
     [Authorize(Policy = "IdadeMinima")]
     public IActionResult get()
     {
-
+        // criado para teste
         return Ok("Acesso permitido!");
     }
 }
