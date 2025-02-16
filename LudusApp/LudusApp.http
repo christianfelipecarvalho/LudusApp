@@ -1,6 +1,83 @@
 @LudusApp_HostAddress = http://localhost:5218
 
-GET {{LudusApp_HostAddress}}/weatherforecast/
-Accept: application/json
+###
+
+GET {{LudusApp_HostAddress}}/api/acesso
+Authorization: Bearer {{login.response.body.$.access_token}}
+
+###
+
+# @name login
+POST {{LudusApp_HostAddress}}/api/usuario/login
+Content-Type: application/json
+
+{
+    "userName": "joaozinho3",
+   "password": "MinhaSenha#1"
+}
+
+###
+# @name buscatodosUsuarios
+GET {{LudusApp_HostAddress}}/api/usuario
+Authorization: Bearer {{login.response.body.$.access_token}}
+###
+
+PUT {{LudusApp_HostAddress}}/api/usuario
+Authorization: Bearer {{login.response.body.$.access_token}}
+Content-Type: application/json
+
+{
+  "id": "f33ccea3-8390-486c-9f4f-6f7fc67936a7",
+  "nome": "Jessica Carvalho",
+  "userName": "jessica3",
+  "email": "jessica3@gmail.com",
+  "cpf": "173.058.448-89",
+  "password": "MinhaSenha#1",
+  "rePassword": "MinhaSenha#1",
+  "ativo": true,
+  "dataNascimento": "2002-10-29T00:00:00.000Z"
+}
+
+###
+
+POST {{LudusApp_HostAddress}}/api/usuario/cadastro
+Authorization: Bearer {{login.response.body.$.access_token}}
+Content-Type: application/json
+
+{
+  "nome": "Beatriz Carvalho",
+  "userName": "BeatrizCarvalho",
+  "email": "BeatrizCarvalho@gmail.com",
+  "cpf": "173.058.448-89",
+  "password": "MinhaSenha#1",
+  "rePassword": "MinhaSenha#1",
+  "ativo": true,
+  "dataNascimento": "2006-10-29T00:00:00.000Z"
+}
+
+###
+
+@id=f33ccea3-8390-486c-9f4f-6f7fc67936a7
+GET {{LudusApp_HostAddress}}/api/usuario/{{id}}
+Authorization: Bearer {{login.response.body.$.access_token}}
+
+###
+
+PATCH {{LudusApp_HostAddress}}/api/usuario/{{id}}
+Authorization: Bearer {{login.response.body.$.access_token}}
+Content-Type: application/json
+[
+  {
+    "op": "replace",
+    "path": "/nome",
+    "value": "Jessica Mendonca"
+  },
+  {
+    "op": "replace",
+    "path": "/email",
+    "value": "jessicamendonca2@email.com"
+  }
+
+]
 
 ###

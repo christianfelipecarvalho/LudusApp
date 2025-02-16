@@ -24,7 +24,7 @@ public class UsuarioController : ControllerBase
     public async Task<IActionResult> Login(LoginUsuarioDto loginUsuarioDto)
     {
         var token = await _usuarioService.Login(loginUsuarioDto);
-        return Ok(token);
+        return Ok(new { access_token = token });
     }
 
     [HttpPost("cadastro")]

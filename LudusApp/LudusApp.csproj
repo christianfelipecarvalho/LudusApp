@@ -24,4 +24,14 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LudusApp.Application\LudusApp.Application.csproj" />
+	<ProjectReference Include="..\LudusApp.Infra.Data\LudusApp.Infra.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Domain\" />
+    <Folder Include="Infra\" />
+  </ItemGroup>
+
 </Project>
