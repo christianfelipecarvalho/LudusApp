@@ -35,7 +35,7 @@ Content-Type: application/json
   "password": "MinhaSenha#1",
   "rePassword": "MinhaSenha#1",
   "ativo": true,
-  "dataNascimento": "2002-10-29T00:00:00.000Z"
+  "dataNascimento": "2005-10-29T00:00:00.000Z"
 }
 
 ###
