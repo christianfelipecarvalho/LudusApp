@@ -57,7 +57,7 @@ Content-Type: application/json
 
 ###
 
-@id=f33ccea3-8390-486c-9f4f-6f7fc67936a7
+@id=92ae9147-c787-495a-842b-9a61dceea0bf
 GET {{LudusApp_HostAddress}}/api/usuario/{{id}}
 Authorization: Bearer {{login.response.body.$.access_token}}
 
