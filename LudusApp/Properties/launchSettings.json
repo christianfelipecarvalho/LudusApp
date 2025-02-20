@@ -1,41 +1,50 @@
 ﻿{
-  "$schema": "http://json.schemastore.org/launchsettings.json",
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:39812",
-      "sslPort": 44328
-    }
-  },
-  "profiles": {
-    "http": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5218",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+    "$schema": "http://json.schemastore.org/launchsettings.json",
+    "iisSettings": {
+        "windowsAuthentication": false,
+        "anonymousAuthentication": true,
+        "iisExpress": {
+            "applicationUrl": "http://localhost:39812",
+            "sslPort": 44328
+        }
     },
-    "https": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:7281;http://localhost:5218",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+    "profiles": {
+        "http": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "launchUrl": "swagger",
+            "applicationUrl": "http://0.0.0.0:80",
+            "#" "Alterado",
+            "para" "a",
+            "porta" 80,
+            "que" "é",
+            "a" "padrão",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        "https": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "launchUrl": "swagger",
+            "applicationUrl": "https://0.0.0.0:443;http://0.0.0.0:80",
+            "#" "Alterado",
+            "para" 443,
+            "(SSL)" "e",
+            80: null,
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        "IIS Express": {
+            "commandName": "IISExpress",
+            "launchBrowser": true,
+            "launchUrl": "swagger",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        }
     }
-  }
 }

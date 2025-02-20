@@ -1,35 +1,31 @@
-# Usar a imagem base do .NET SDK
+# Usar a imagem base do .NET SDK para build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 # Definir o diretório de trabalho
 WORKDIR /app
 
-# Copiar o arquivo de solução .sln para o contêiner
-COPY LudusApp.sln ./
-
-# Copiar os arquivos .csproj das respectivas pastas
+# Copiar e restaurar dependências
+COPY *.sln ./
 COPY LudusApp/*.csproj LudusApp/
 COPY LudusApp.Application/*.csproj LudusApp.Application/
 COPY LudusApp.Domain/*.csproj LudusApp.Domain/
 COPY LudusApp.Infra.Data/*.csproj LudusApp.Infra.Data/
+RUN dotnet restore
 
-# Restaurar pacotes NuGet
-RUN dotnet restore LudusApp.sln
-
-# Copiar o restante do código
+# Copiar o restante do código e compilar
 COPY . .
-
-# Publicar o aplicativo
 RUN dotnet publish LudusApp/LudusApp.csproj -c Release -o /app/publish
 
-# Definir a imagem de runtime
+# Usar a imagem otimizada de runtime do .NET 8
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 
-# Definir o diretório de trabalho no contêiner
 WORKDIR /app
 
-# Copiar os arquivos publicados para o contêiner
+# Copiar arquivos publicados
 COPY --from=build /app/publish .
 
-# Definir o comando para rodar o aplicativo
+# Expor a porta 80 para comunicação interna
+EXPOSE 80
+
+# Definir o comando de entrada
 ENTRYPOINT ["dotnet", "LudusApp.dll"]
