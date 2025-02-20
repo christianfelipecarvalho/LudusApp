@@ -15,7 +15,7 @@ services:
       - backend_network
 
   nginx:
-    image: nginx:alpine
+    image: docker.io/nginx:alpine
     container_name: nginx
     ports:
       - "80:80"
