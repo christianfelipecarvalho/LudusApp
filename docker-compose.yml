@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: backend
+    restart: always  # Garante que o contêiner sempre reinicie
     environment:
       - ASPNETCORE_ENVIRONMENT=Development  # trocar aqui quando for para produção Production
       - ASPNETCORE_URLS=http://+:80  # O backend escuta na porta 80
@@ -16,7 +17,8 @@ services:
 
   nginx:
     image: docker.io/nginx:alpine
-    container_name: nginx   
+    container_name: nginx
+    restart: always  # Garante que o contêiner sempre reinicie
     ports:
       - "80:80"  # Apenas HTTP, removemos 443
     volumes:
