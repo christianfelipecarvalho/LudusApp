@@ -6,6 +6,6 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "80:80"  # Expondo a porta 5000 da máquina para a porta 80 do container
+      - "5000:5000"  # Expondo a porta 5000 da máquina para a porta 80 do container
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
