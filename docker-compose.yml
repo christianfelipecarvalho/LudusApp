@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"  # Expondo a porta 5000 da máquina para a porta 80 do container
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
