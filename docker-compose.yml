@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: backend
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Development  # trocar aqui quando for para produção Production
       - ASPNETCORE_URLS=http://+:80  # O backend escuta na porta 80
     expose:
       - "80"  # Expõe a porta 80 para o Nginx
