@@ -25,7 +25,7 @@ public class PingBackgroundService : BackgroundService
             try
             {
                 // Faz a requisição para manter o servidor ativo
-                var response = await _httpClient.GetAsync("https://localhost:5001/api/ping", stoppingToken);
+                var response = await _httpClient.GetAsync("http://54.227.204.183/api/ping", stoppingToken);
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("Ping realizado com sucesso.");
