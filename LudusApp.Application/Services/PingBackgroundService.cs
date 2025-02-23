@@ -28,7 +28,7 @@ public class PingBackgroundService : BackgroundService
                 var response = await _httpClient.GetAsync("http://localhost/api/ping", stoppingToken);
                 if (response.IsSuccessStatusCode)
                 {
-                    _logger.LogInformation("Ping realizado com sucesso.");
+                    _logger.LogInformation($"Ping realizado com sucesso. -> {DateTime.Now}");
                 }
                 else
                 {
