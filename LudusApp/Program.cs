@@ -12,6 +12,10 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("http://0.0.0.0:80");
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.Limits.KeepAliveTimeout = TimeSpan.FromDays(365); // Adicionando para não encerrar a applicacao
+});
 
 builder.Services.AddHttpClient(); // adicionado para o servico de ping
 builder.Services.AddHostedService<PingBackgroundService>();

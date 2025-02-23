@@ -36,8 +36,8 @@ public class PingBackgroundService : BackgroundService
                 _logger.LogError($"Erro ao realizar ping: {ex.Message}");
             }
 
-            // Aguarda 5 minutos antes do próximo ping
-            await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
+            // Aguarda 1 minutos antes do próximo ping
+            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
         }
     }
 }
