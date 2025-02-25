@@ -15,11 +15,6 @@
             "launchBrowser": true,
             "launchUrl": "swagger",
             "applicationUrl": "http://0.0.0.0:80",
-            "#" "Alterado",
-            "para" "a",
-            "porta" 80,
-            "que" "é",
-            "a" "padrão",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
             }
@@ -30,10 +25,6 @@
             "launchBrowser": true,
             "launchUrl": "swagger",
             "applicationUrl": "https://0.0.0.0:443;http://0.0.0.0:80",
-            "#" "Alterado",
-            "para" 443,
-            "(SSL)" "e",
-            80: null,
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
             }
