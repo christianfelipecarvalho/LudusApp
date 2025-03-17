@@ -20,7 +20,15 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 builder.Services.AddHttpClient(); // adicionado para o servico de ping
 builder.Services.AddHostedService<PingBackgroundService>();
 
-var connectionString = builder.Configuration.GetConnectionString("LudusAppContext");
+//ADICIONAR NOVAMENTE QUANDO UTILIZAR EKS OU EC2 AMAZON...
+//var connectionString = builder.Configuration.GetConnectionString("LudusAppContext");
+//builder.Services.AddDbContext<LudusAppContext>(opts => opts.UseNpgsql(connectionString));
+
+//Adicionando para o render
+var connectionString = Environment.GetEnvironmentVariable("LUDUSAPP_DB")
+?? builder.Configuration.GetConnectionString("LudusAppContext");
+
+Console.WriteLine($"Connection String Usada: {(connectionString != null ? "Definida" : "Não definida")}");
 
 builder.Services.AddDbContext<LudusAppContext>(opts => opts.UseNpgsql(connectionString));
 // Add services to the container.
@@ -58,7 +66,7 @@ builder.Services.AddAuthentication(options =>
     {
         OnChallenge = context =>
         {
-            context.HandleResponse(); 
+            context.HandleResponse();
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             context.Response.ContentType = "application/json";
             return context.Response.WriteAsync("{\"error\": \"Não autorizado. Token ausente ou inválido.\"}");
