@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,11 +21,6 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 builder.Services.AddHttpClient(); // adicionado para o servico de ping
 builder.Services.AddHostedService<PingBackgroundService>();
 
-//ADICIONAR NOVAMENTE QUANDO UTILIZAR EKS OU EC2 AMAZON...
-//var connectionString = builder.Configuration.GetConnectionString("LudusAppContext");
-//builder.Services.AddDbContext<LudusAppContext>(opts => opts.UseNpgsql(connectionString));
-
-//Adicionando para o render
 var connectionString = Environment.GetEnvironmentVariable("LUDUSAPP_DB")
 ?? builder.Configuration.GetConnectionString("LudusAppContext");
 
@@ -46,7 +42,37 @@ builder.Services.AddControllers().AddNewtonsoftJson();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    // Adiciona o esquema de segurança para autenticação com JWT
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please insert token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+
+    // Adiciona o requisito de segurança globalmente, indicando que todos os endpoints requerem autenticação
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] { }
+        }
+    });
+});
+
 
 builder.Services.AddAuthentication(options =>
 {
@@ -90,7 +116,7 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Aqui verificar se crio a variavel agora ou mais pra frente...
 //if (app.Environment.IsDevelopment())
 //{
     app.UseSwagger();
