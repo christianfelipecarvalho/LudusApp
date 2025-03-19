@@ -73,6 +73,9 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+///Quando for adicionar o issuer e audience habilitar essas variaveis para buscar do appsettings.
+//var jwtSettings = builder.Configuration.GetSection("Jwt");
+//var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -88,6 +91,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuer = false,
         ClockSkew = TimeSpan.Zero
     };
+    /// colocar aqui para pegar o issuer e audience da variavel de ambiente ou appsettings para garantir a segurança do token---
     options.Events = new JwtBearerEvents
     {
         OnChallenge = context =>
@@ -99,6 +103,18 @@ builder.Services.AddAuthentication(options =>
         }
     };
 });
+builder.Services.AddAuthentication()
+    .AddGoogle(googleOptions =>
+    {
+        // Tenta pegar primeiro das variáveis de ambiente, se não encontrar, pega do appsettings
+        googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"] ??
+                                 Environment.GetEnvironmentVariable("Authentication_Google_ClientId");
+
+        googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"] ??
+                                     Environment.GetEnvironmentVariable("Authentication_Google_ClientSecret");
+    });
+
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -122,7 +138,7 @@ var app = builder.Build();
     app.UseSwagger();
     app.UseSwaggerUI();
 //}
-
+app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

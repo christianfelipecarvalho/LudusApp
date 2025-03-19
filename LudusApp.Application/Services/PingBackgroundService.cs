@@ -37,7 +37,7 @@ public class PingBackgroundService : BackgroundService
             }
 
             // Aguarda 1 minutos antes do próximo ping
-            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+            await Task.Delay(TimeSpan.FromMinutes(10000), stoppingToken);
         }
     }
 }

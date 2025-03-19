@@ -24,6 +24,7 @@ public class UsuarioController : ControllerBase
     public async Task<IActionResult> Login(LoginUsuarioDto loginUsuarioDto)
     {
         var token = await _usuarioService.Login(loginUsuarioDto);
+        
         return Ok(new { access_token = token });
     }
 

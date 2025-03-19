@@ -130,7 +130,7 @@ public class UsuarioService
 
         if (!resultado.Succeeded)
         {
-            throw new ApplicationException("Usuario não autenticado");
+            throw new ApplicationException("Usuario e senha inválidos!");
         }
         var usuario = _signInManager.UserManager.Users.FirstOrDefault(user => user.NormalizedUserName == loginUsuarioDto.UserName.ToUpper());
 
