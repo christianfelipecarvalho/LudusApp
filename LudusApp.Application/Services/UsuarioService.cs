@@ -141,5 +141,46 @@ public class UsuarioService
         return token;
     }
 
+    public async Task<string> LoginComGoogle(string googleId, string email, string fullName)
+    {
+        var usuario = await _userManager.Users.FirstOrDefaultAsync(u => u.GoogleId == googleId);
+
+        if (usuario == null)
+        {
+            // Se o usuário já existir no banco com esse e-mail, associamos o GoogleId
+            usuario = await _userManager.FindByEmailAsync(email);
+            if (usuario != null)
+            {
+                usuario.GoogleId = googleId;
+                await _userManager.UpdateAsync(usuario);
+            }
+            else
+            {
+                usuario = new Usuario
+                {
+                    UserName = email,
+                    Email = email,
+                    Nome= fullName,
+                    DataNascimento = DateTime.MinValue, 
+                    Cpf = "000.000.000-00",
+                    GoogleId = googleId,
+                    ativo = true
+                };
+
+                var resultado = await _userManager.CreateAsync(usuario);
+                if (!resultado.Succeeded)
+                {
+                    throw new ApplicationException("Falha ao cadastrar usuário com Google.");
+                }
+            }
+        }
+
+        // Gerar token JWT para autenticação
+        var token = _tokenService.GenerateToken(usuario);
+        return token;
+    }
+
+
+
 
 }

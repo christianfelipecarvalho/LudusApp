@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using LudusApp.Application.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -8,10 +9,15 @@ using System.Threading.Tasks;
 [ApiController]
 public class LoginGoogleController : ControllerBase
 {
+    private readonly UsuarioService _usuarioService;
+
+    public LoginGoogleController(UsuarioService usuarioService)
+    {
+        _usuarioService = usuarioService;
+    }
+
     [HttpGet("google-login")]
     public IActionResult GoogleLogin()
-    
-    
     {
         var redirectUrl = Url.Action(nameof(GoogleResponse), "LoginGoogleController");
         var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
@@ -21,55 +27,56 @@ public class LoginGoogleController : ControllerBase
     [HttpGet("google-response")]
     public async Task<IActionResult> GoogleResponse()
     {
-        // Log para verificar o início da resposta
-        Console.WriteLine("Iniciando a autenticação com o Google.");
-
         var authenticateResult = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
 
-        // Log para ver o que está acontecendo após a autenticação
-        if (authenticateResult == null)
+        if (authenticateResult == null || !authenticateResult.Succeeded)
         {
-            Console.WriteLine("Autenticação retornou null.");
-            return BadRequest("Falha ao autenticar com Google: resposta nula.");
-        }
-
-        if (!authenticateResult.Succeeded)
-        {
-            // Log do erro de falha na autenticação
-            Console.WriteLine("Falha na autenticação: " + authenticateResult.Failure?.Message);
             return BadRequest("Falha ao autenticar com Google");
         }
 
-        var claims = authenticateResult.Principal?.Identities?.FirstOrDefault()?.Claims.Select(c => new { c.Type, c.Value });
+        var claims = authenticateResult.Principal?.Identities?.FirstOrDefault()?.Claims;
 
-        var user = new
-        {
-            GoogleId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value,
-            FullName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value,
-            Email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value,
-            ProfilePicture = claims.FirstOrDefault(c => c.Type == "picture")?.Value // Foto do perfil
-        };
-
-
-        // Log para verificar os claims
         if (claims == null)
         {
-            Console.WriteLine("Nenhum claim encontrado.");
+            return BadRequest("Nenhuma informação de usuário encontrada.");
         }
-        else
+
+        var googleId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value; // ID único do Google
+        var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value; // E-mail
+        var nome = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value; // Nome completo
+        var sobrenome = claims.FirstOrDefault(c => c.Type == ClaimTypes.Surname)?.Value; // Sobrenome
+        var nomeUsuario = claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName)?.Value; // Primeiro nome
+        var fotoPerfil = claims.FirstOrDefault(c => c.Type == "picture")?.Value; // URL da foto de perfil
+       
+        
+        /*
+         * Verificar como liberar esses dados
+         *  var localizacao = claims.FirstOrDefault(c => c.Type == "locale")?.Value; // Localidade (ex: "pt-BR")
+            var perfilGoogle = claims.FirstOrDefault(c => c.Type == "profile")?.Value; // URL do perfil do Google
+            var provedorAutenticacao = claims.FirstOrDefault(c => c.Type == ClaimTypes.AuthenticationMethod)?.Value; // Método de autenticação
+            var telefone = claims.FirstOrDefault(c => c.Type == ClaimTypes.MobilePhone)?.Value; // Número de telefone
+            var genero = claims.FirstOrDefault(c => c.Type == ClaimTypes.Gender)?.Value; // Gênero
+            var dataNascimento = claims.FirstOrDefault(c => c.Type == ClaimTypes.DateOfBirth)?.Value; // Data de nascimento
+            var fusoHorario = claims.FirstOrDefault(c => c.Type == "timezone")?.Value; // Fuso horário
+            var endereco = claims.FirstOrDefault(c => c.Type == ClaimTypes.StreetAddress)?.Value; // Endereço
+            var pais = claims.FirstOrDefault(c => c.Type == ClaimTypes.Country)?.Value; // País
+            var atualizadoEm = claims.FirstOrDefault(c => c.Type == "updated_at")?.Value; // Última atualização do perfil
+            var emailVerificado = claims.FirstOrDefault(c => c.Type == "email_verified")?.Value; // E-mail verificado (true/false)
+            var hd = claims.FirstOrDefault(c => c.Type == "hd")?.Value; // Domínio do e-mail (ex: google.com se for do Google Workspace)
+
+        */
+        if (string.IsNullOrEmpty(email))
         {
-            foreach (var claim in claims)
-            {
-                Console.WriteLine($"Claim: {claim.Type} - {claim.Value}");
-            }
+            return BadRequest("O Google não retornou um e-mail válido.");
         }
+
+        var token = await _usuarioService.LoginComGoogle(googleId, email, nome);
 
         return Ok(new
         {
             Message = "Autenticação com Google bem-sucedida",
-            Claims = claims
+            Token = token
         });
     }
-
 
 }

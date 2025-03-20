@@ -113,5 +113,10 @@ ALTER TABLE "AspNetUsers" ADD ativo boolean NOT NULL DEFAULT FALSE;
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
 VALUES ('20250215004550_EditandoUsuario', '9.0.1');
 
+ALTER TABLE "AspNetUsers" ADD "GoogleId" text;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20250320001545_AddGoogleIdToUsers', '9.0.1');
+
 COMMIT;
 
