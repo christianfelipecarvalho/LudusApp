@@ -1,4 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using LudusApp.Domain.Empresas;
+using LudusApp.Domain.TemaSettings;
+using LudusApp.Domain.Entities.VinculosUsuarioEmpresa;
 using Microsoft.AspNetCore.Identity;
 
 namespace LudusApp.Domain.Usuarios;
@@ -25,6 +28,12 @@ public class Usuario : IdentityUser
     public string? Cidade { get; set; }
     public string? Telefone { get; set; }
     public string? Numero { get; set; }
+    public bool IsMultiTenant { get; set; }
+    public Guid? TenantId { get; set; }
+    public Guid? EmpresaId { get; set; } 
+    public Empresa? Empresa { get; set; }
+    public Tema Tema { get; set; } 
+    public ICollection<UsuarioEmpresa> UsuariosEmpresas { get; set; }
 
     public Usuario() : base() { }
 }

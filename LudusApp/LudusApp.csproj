@@ -4,11 +4,20 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+   <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1591</NoWarn> <!-- Evita warnings de membros sem documentação -->
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\PingController.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="Hangfire" Version="1.8.18" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.18" />
+    <PackageReference Include="Hangfire.PostgreSql" Version="1.20.10" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.12" />
@@ -29,5 +38,6 @@
     <ProjectReference Include="..\LudusApp.Application\LudusApp.Application.csproj" />
 	<ProjectReference Include="..\LudusApp.Infra.Data\LudusApp.Infra.Data.csproj" />
   </ItemGroup>
+	
 
 </Project>

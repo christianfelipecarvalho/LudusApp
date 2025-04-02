@@ -7,7 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace LudusApp.Controllers;
-    
+
+/// <summary>
+/// Controlador para gerenciar usuários.
+/// </summary>
 [Route("api/[controller]")]
 [ApiController]
 public class UsuarioController : ControllerBase
@@ -20,16 +23,13 @@ public class UsuarioController : ControllerBase
         _usuarioService = usuarioService;
     }
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginUsuarioDto loginUsuarioDto)
-    {
-        var token = await _usuarioService.Login(loginUsuarioDto);
-        
-        return Ok(new { access_token = token });
-    }
-
+    /// <summary>
+    /// Cadastra um novo usuário.
+    /// </summary>
+    /// <param name="usuarioDto">Dados do usuário.</param>
+    /// <returns>Mensagem de sucesso.</returns>
     [HttpPost("cadastro")]
-    [Authorize]
+    //[Authorize]
     public async Task<IActionResult> CadastraUsuario([FromBody] CreateUsuarioDto usuarioDto)
     {
         await _usuarioService.Cadastra(usuarioDto);
@@ -37,6 +37,11 @@ public class UsuarioController : ControllerBase
 
     }
 
+    /// <summary>
+    /// Edita um usuário existente.
+    /// </summary>
+    /// <param name="usuarioDto">Novos dados do usuário.</param>
+    /// <returns>Mensagem de sucesso.</returns>
     [HttpPut]
     [Authorize]
     public async Task<IActionResult> EditaUsuario([FromBody] UpdateUsuarioDto usuarioDto)
@@ -45,6 +50,12 @@ public class UsuarioController : ControllerBase
         return Ok("Usuário Editado com sucesso!");
     }
 
+    /// <summary>
+    /// Busca todos os usuários cadastrados.
+    /// </summary>
+    /// <param name="skip">Quantidade de usuários a serem ignorados (paginação).</param>
+    /// <param name="take">Quantidade de usuários a serem retornados.</param>
+    /// <returns>Lista de usuários.</returns>
     [HttpGet]
     [Authorize]
     public async Task<IActionResult> BuscarTodosUsuarios([FromQuery] int skip = 0, [FromQuery] int take = 50)
@@ -57,6 +68,11 @@ public class UsuarioController : ControllerBase
         return Ok(usuarios);
     }
 
+    /// <summary>
+    /// Busca usuário por id.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns>Dados do usuario</returns>
     [HttpGet("{id}")]
     [Authorize]
     public async Task<IActionResult> BuscaUsuarioPorId(string id)
@@ -65,6 +81,12 @@ public class UsuarioController : ControllerBase
         return Ok(usuario);
     }
 
+    /// <summary>
+    /// Atualiza parcialmente um usuário.
+    /// </summary>
+    /// <param name="id">ID do usuário.</param>
+    /// <param name="patchDocument">Dados a serem atualizados.</param>
+    /// <returns>Usuário atualizado.</returns>
     [HttpPatch("{id}")]
     [Authorize]
     public async Task<IActionResult> AtualizarParcialmente(string id, [FromBody] JsonPatchDocument<UpdateCampoUsuarioDto> patchDocument)

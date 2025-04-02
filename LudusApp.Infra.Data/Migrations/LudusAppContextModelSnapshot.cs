@@ -22,6 +22,303 @@ namespace LudusApp.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("LudusApp.Domain.Empresas.Empresa", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Apelido")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Bairro")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Cep")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Cidade")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Cnpj")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("DataHoraCadastro")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DataUltimaAlteracao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Ddd")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Endereco")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("Ie")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Im")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("NomeFantasia")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NumEndereco")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RazaoSocial")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Telefone")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("TenantId");
+
+                    b.Property<string>("UsuarioCriacao")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UsuarioUltimaAlteracao")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Empresas");
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.Entities.Emails.ConfiguracaoEmail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("EnableSSL")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Porta")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RemetenteEmail")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Senha")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ServidorSMTP")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ConfiguracoesEmail");
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.Entities.Emails.Email", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Assunto")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("DataEnvio")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DataErro")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Destinatario")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Mensagem")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Emails");
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.Entities.Emails.TemplateEmail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Assunto")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Mensagem")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TemplatesEmail");
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.Entities.Localidades.Bairro", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CidadeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CidadeId");
+
+                    b.ToTable("Bairros");
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.Entities.Localidades.Cidade", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EstadoId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EstadoId");
+
+                    b.ToTable("Cidades");
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.Entities.Localidades.Estado", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Sigla")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Estados");
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.Entities.VinculosUsuarioEmpresa.UsuarioEmpresa", b =>
+                {
+                    b.Property<Guid>("EmpresaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("DataUltimaAlteracao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DataVinculo")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Papel")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("EmpresaId", "UsuarioId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("UsuariosEmpresas");
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.TemaSettings.Tema", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("BorderRadius")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("DarkMode")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("PrimaryColor")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SecondaryColor")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId")
+                        .IsUnique();
+
+                    b.ToTable("Temas");
+                });
+
             modelBuilder.Entity("LudusApp.Domain.Usuarios.Usuario", b =>
                 {
                     b.Property<string>("Id")
@@ -57,6 +354,9 @@ namespace LudusApp.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<Guid?>("EmpresaId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Endereco")
                         .HasColumnType("text");
 
@@ -65,6 +365,9 @@ namespace LudusApp.Migrations
 
                     b.Property<string>("GoogleId")
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsMultiTenant")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -102,6 +405,9 @@ namespace LudusApp.Migrations
                     b.Property<string>("Telefone")
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uuid");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
@@ -114,12 +420,23 @@ namespace LudusApp.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Cpf")
+                        .IsUnique();
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("EmpresaId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -256,6 +573,65 @@ namespace LudusApp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("LudusApp.Domain.Entities.Localidades.Bairro", b =>
+                {
+                    b.HasOne("LudusApp.Domain.Entities.Localidades.Cidade", "Cidade")
+                        .WithMany()
+                        .HasForeignKey("CidadeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cidade");
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.Entities.Localidades.Cidade", b =>
+                {
+                    b.HasOne("LudusApp.Domain.Entities.Localidades.Estado", null)
+                        .WithMany("Cidades")
+                        .HasForeignKey("EstadoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.Entities.VinculosUsuarioEmpresa.UsuarioEmpresa", b =>
+                {
+                    b.HasOne("LudusApp.Domain.Empresas.Empresa", "Empresa")
+                        .WithMany("UsuariosEmpresas")
+                        .HasForeignKey("EmpresaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LudusApp.Domain.Usuarios.Usuario", "Usuario")
+                        .WithMany("UsuariosEmpresas")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Empresa");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.TemaSettings.Tema", b =>
+                {
+                    b.HasOne("LudusApp.Domain.Usuarios.Usuario", "Usuario")
+                        .WithOne("Tema")
+                        .HasForeignKey("LudusApp.Domain.TemaSettings.Tema", "UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.Usuarios.Usuario", b =>
+                {
+                    b.HasOne("LudusApp.Domain.Empresas.Empresa", "Empresa")
+                        .WithMany()
+                        .HasForeignKey("EmpresaId");
+
+                    b.Navigation("Empresa");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -305,6 +681,24 @@ namespace LudusApp.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.Empresas.Empresa", b =>
+                {
+                    b.Navigation("UsuariosEmpresas");
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.Entities.Localidades.Estado", b =>
+                {
+                    b.Navigation("Cidades");
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.Usuarios.Usuario", b =>
+                {
+                    b.Navigation("Tema")
+                        .IsRequired();
+
+                    b.Navigation("UsuariosEmpresas");
                 });
 #pragma warning restore 612, 618
         }

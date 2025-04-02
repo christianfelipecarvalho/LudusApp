@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Profiles\**" />
+    <EmbeddedResource Remove="Profiles\**" />
+    <None Remove="Profiles\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.12" />
@@ -15,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LudusApp.Domain\LudusApp.Domain.csproj" />
+    <ProjectReference Include="..\LudusApp.Infra.Data\LudusApp.Infra.Data.csproj" />
   </ItemGroup>
 
 </Project>
