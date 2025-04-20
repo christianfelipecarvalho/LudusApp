@@ -27,7 +27,7 @@ namespace LudusApp.Migrations
                 nullable: true);
 
             migrationBuilder.AddColumn<bool>(
-                name: "ativo",
+                name: "Ativo",
                 table: "AspNetUsers",
                 type: "boolean",
                 nullable: false,
@@ -42,7 +42,7 @@ namespace LudusApp.Migrations
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(
-                name: "ativo",
+                name: "Ativo",
                 table: "AspNetUsers");
 
             migrationBuilder.AlterColumn<string>(

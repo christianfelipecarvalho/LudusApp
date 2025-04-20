@@ -298,7 +298,7 @@ namespace LudusApp.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<bool>("ativo")
+                    b.Property<bool>("Ativo")
                         .HasColumnType("boolean");
 
                     b.HasKey("Id");
