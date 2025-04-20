@@ -5,8 +5,8 @@ namespace LudusApp.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public abstract class BaseController<TService, TEntity> : ControllerBase
-    where TService : BaseService<TEntity>
+public abstract class BaseController<TService, TEntity, TReadDto, TCreateDto, TUpdateDto> : ControllerBase
+    where TService : BaseService<TEntity, TReadDto, TCreateDto, TUpdateDto>
     where TEntity : class
 {
     protected readonly TService _service;
@@ -23,7 +23,7 @@ public abstract class BaseController<TService, TEntity> : ControllerBase
     [HttpGet("Buscartodos")]
     public async Task<IActionResult> BuscarTodos()
     {
-        var resultado = await _service.ObterTodosAsync();
+        var resultado = await _service.RecuperaTodosAsync();
 
         if (resultado == null || !resultado.Any())
         {
@@ -32,24 +32,5 @@ public abstract class BaseController<TService, TEntity> : ControllerBase
 
         return Ok(resultado);
     }
-
-    /// <summary>
-    /// Busca item por ID
-    /// </summary>
-    /// <param name="id">ID do item</param>
-    /// <returns>Busca todos os dados do Id correspondente</returns>
-    [HttpGet("{id}")]
-    public async Task<IActionResult> BuscarPorId(int id)
-    {
-        var item = await _service.ObterPorIdIntAsync(id);
-
-        if (item == null)
-        {
-            return NotFound($"Nenhum item encontrado para o ID: {id}");
-        }
-
-        return Ok(item); // Retorna o objeto inteiro
-    }
-
  
 }

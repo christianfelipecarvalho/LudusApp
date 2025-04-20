@@ -15,7 +15,6 @@ public class ReadUsuarioDto
 
     public string Cpf { get; set; }
     public string Cep { get; set; }
-    public bool ativo { get; set; }
     public string? Estado { get; set; }
 
     public string Endereco { get; set; }

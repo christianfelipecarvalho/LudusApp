@@ -31,6 +31,9 @@ namespace LudusApp.Migrations
                     b.Property<string>("Apelido")
                         .HasColumnType("text");
 
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Bairro")
                         .IsRequired()
                         .HasColumnType("text");
@@ -46,6 +49,9 @@ namespace LudusApp.Migrations
                     b.Property<string>("Cnpj")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("DataHoraCadastro")
                         .HasColumnType("timestamp with time zone");
@@ -86,6 +92,11 @@ namespace LudusApp.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
@@ -93,9 +104,12 @@ namespace LudusApp.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("TenantId")
+                    b.Property<Guid>("TenantId")
                         .HasColumnType("uuid")
                         .HasColumnName("TenantId");
+
+                    b.Property<long>("UsuarioCadastro")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("UsuarioCriacao")
                         .IsRequired()
@@ -194,6 +208,170 @@ namespace LudusApp.Migrations
                     b.ToTable("TemplatesEmail");
                 });
 
+            modelBuilder.Entity("LudusApp.Domain.Entities.Evento.Evento", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("DataAlteracao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateOnly>("DataEvento")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime?>("DataUltimaAlteracao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<TimeSpan>("HoraFim")
+                        .HasColumnType("interval");
+
+                    b.Property<TimeSpan>("HoraInicio")
+                        .HasColumnType("interval");
+
+                    b.Property<Guid>("IdLocal")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("IdTenant")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("IdUsuario")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<long?>("Numero")
+                        .HasColumnType("bigint");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Telefone")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("UsuarioCadastro")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("UsuarioUltimaAlteracao")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("ValorHora")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("ValorTotal")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdLocal");
+
+                    b.HasIndex("IdUsuario");
+
+                    b.ToTable("Eventos");
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.Entities.Local.Local", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Bairro")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Cep")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("CidadeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Complemento")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DataUltimaAlteracao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("DiasFuncionamento")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("EmpresaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<TimeSpan>("HorarioAbertura")
+                        .HasColumnType("interval");
+
+                    b.Property<TimeSpan>("HorarioFechamento")
+                        .HasColumnType("interval");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Observacao")
+                        .HasColumnType("text");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea");
+
+                    b.Property<string>("Rua")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("TenantId");
+
+                    b.Property<long>("UsuarioCadastro")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("UsuarioUltimaAlteracao")
+                        .HasColumnType("bigint");
+
+                    b.Property<double?>("ValorHora")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CidadeId");
+
+                    b.HasIndex("EmpresaId");
+
+                    b.ToTable("Locais");
+                });
+
             modelBuilder.Entity("LudusApp.Domain.Entities.Localidades.Bairro", b =>
                 {
                     b.Property<int>("Id")
@@ -216,7 +394,7 @@ namespace LudusApp.Migrations
                     b.ToTable("Bairros");
                 });
 
-            modelBuilder.Entity("LudusApp.Domain.Entities.Localidades.Cidade", b =>
+            modelBuilder.Entity("LudusApp.Domain.Entities.Localidades.Cidade.Cidade", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -238,7 +416,7 @@ namespace LudusApp.Migrations
                     b.ToTable("Cidades");
                 });
 
-            modelBuilder.Entity("LudusApp.Domain.Entities.Localidades.Estado", b =>
+            modelBuilder.Entity("LudusApp.Domain.Entities.Localidades.Estado.Estado", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -292,6 +470,9 @@ namespace LudusApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("BorderRadius")
                         .IsRequired()
                         .HasColumnType("text");
@@ -299,17 +480,34 @@ namespace LudusApp.Migrations
                     b.Property<bool>("DarkMode")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DataUltimaAlteracao")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("PrimaryColor")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea");
 
                     b.Property<string>("SecondaryColor")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<long>("UsuarioCadastro")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("UsuarioId")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<long?>("UsuarioUltimaAlteracao")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -326,6 +524,9 @@ namespace LudusApp.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Bairro")
                         .HasColumnType("text");
@@ -344,7 +545,13 @@ namespace LudusApp.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime>("DataNascimento")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DataUltimaAlteracao")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
@@ -399,6 +606,9 @@ namespace LudusApp.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<byte[]>("RowVersion")
+                        .HasColumnType("bytea");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
@@ -415,8 +625,11 @@ namespace LudusApp.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<bool>("ativo")
-                        .HasColumnType("boolean");
+                    b.Property<string>("UsuarioCadastro")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UsuarioUltimaAlteracao")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -573,9 +786,46 @@ namespace LudusApp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("LudusApp.Domain.Entities.Evento.Evento", b =>
+                {
+                    b.HasOne("LudusApp.Domain.Entities.Local.Local", "Local")
+                        .WithMany("Eventos")
+                        .HasForeignKey("IdLocal")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LudusApp.Domain.Usuarios.Usuario", "Usuario")
+                        .WithMany("Eventos")
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Local");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.Entities.Local.Local", b =>
+                {
+                    b.HasOne("LudusApp.Domain.Entities.Localidades.Cidade.Cidade", "Cidade")
+                        .WithMany("Locais")
+                        .HasForeignKey("CidadeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LudusApp.Domain.Empresas.Empresa", "Empresa")
+                        .WithMany()
+                        .HasForeignKey("EmpresaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cidade");
+
+                    b.Navigation("Empresa");
+                });
+
             modelBuilder.Entity("LudusApp.Domain.Entities.Localidades.Bairro", b =>
                 {
-                    b.HasOne("LudusApp.Domain.Entities.Localidades.Cidade", "Cidade")
+                    b.HasOne("LudusApp.Domain.Entities.Localidades.Cidade.Cidade", "Cidade")
                         .WithMany()
                         .HasForeignKey("CidadeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -584,9 +834,9 @@ namespace LudusApp.Migrations
                     b.Navigation("Cidade");
                 });
 
-            modelBuilder.Entity("LudusApp.Domain.Entities.Localidades.Cidade", b =>
+            modelBuilder.Entity("LudusApp.Domain.Entities.Localidades.Cidade.Cidade", b =>
                 {
-                    b.HasOne("LudusApp.Domain.Entities.Localidades.Estado", null)
+                    b.HasOne("LudusApp.Domain.Entities.Localidades.Estado.Estado", null)
                         .WithMany("Cidades")
                         .HasForeignKey("EstadoId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -688,13 +938,25 @@ namespace LudusApp.Migrations
                     b.Navigation("UsuariosEmpresas");
                 });
 
-            modelBuilder.Entity("LudusApp.Domain.Entities.Localidades.Estado", b =>
+            modelBuilder.Entity("LudusApp.Domain.Entities.Local.Local", b =>
+                {
+                    b.Navigation("Eventos");
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.Entities.Localidades.Cidade.Cidade", b =>
+                {
+                    b.Navigation("Locais");
+                });
+
+            modelBuilder.Entity("LudusApp.Domain.Entities.Localidades.Estado.Estado", b =>
                 {
                     b.Navigation("Cidades");
                 });
 
             modelBuilder.Entity("LudusApp.Domain.Usuarios.Usuario", b =>
                 {
+                    b.Navigation("Eventos");
+
                     b.Navigation("Tema")
                         .IsRequired();
 

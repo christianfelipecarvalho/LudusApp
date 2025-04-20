@@ -1,5 +1,6 @@
 ﻿using LudusApp.Application.Dtos.Localidades;
 using LudusApp.Domain.Entities.Localidades;
+using LudusApp.Domain.Entities.Localidades.Estado;
 
 namespace LudusApp.Application.Mappers;
 

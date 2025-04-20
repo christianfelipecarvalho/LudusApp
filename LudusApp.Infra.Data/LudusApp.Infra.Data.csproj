@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LudusApp.Application\LudusApp.Application.csproj" />
     <ProjectReference Include="..\LudusApp.Domain\LudusApp.Domain.csproj" />
 
   </ItemGroup>

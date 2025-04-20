@@ -6,25 +6,73 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: backend
-    restart: always  # Garante que o contêiner sempre reinicie
+    restart: always
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development  # trocar aqui quando for para produção Production
+      - ASPNETCORE_ENVIRONMENT=Development  # Trocar para Production em produção
       - ASPNETCORE_URLS=http://+:80  # O backend escuta na porta 80
     expose:
       - "80"  # Expõe a porta 80 para o Nginx
     networks:
       - backend_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   nginx:
     image: docker.io/nginx:alpine
     container_name: nginx
-    restart: always  # Garante que o contêiner sempre reinicie
+    restart: always
     ports:
-      - "80:80"  # Apenas HTTP, removemos 443
+      - "80:80"  # Apenas HTTP
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - backend
+    networks:
+      - backend_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    restart: always
+    ports:
+      - "3100:3100"  # Porta para o Loki
+    volumes:
+      - ./loki-config.yml:/etc/loki/config.yml  # Configuração do Loki
+    networks:
+      - backend_network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"  # Porta para o Grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin  # Usuário do Grafana
+      - GF_SECURITY_ADMIN_PASSWORD=admin  # Senha do Grafana
+    depends_on:
+      - loki
+    networks:
+      - backend_network
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    restart: always
+    volumes:
+      - ./promtail-config.yml:/etc/promtail/config.yml  # Configuração do Promtail
+      - ./logs:/var/log  # Mapear o diretório de logs
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
     networks:
       - backend_network
 

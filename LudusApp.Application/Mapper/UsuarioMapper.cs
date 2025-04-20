@@ -16,7 +16,6 @@ public static class UsuarioMapper
             DataNascimento = dto.DataNascimento,
             Cpf = dto.Cpf,
             Cep = dto.Cep,
-            ativo = dto.ativo,
             Estado = dto.Estado,
             Endereco = dto.Endereco,
             Bairro = dto.Bairro,
@@ -33,7 +32,6 @@ public static class UsuarioMapper
         usuario.DataNascimento = dto.DataNascimento;
         usuario.Cpf = dto.Cpf;
         usuario.Cep = dto.Cep;
-        usuario.ativo = dto.ativo;
         usuario.Estado = dto.Estado;
         usuario.Endereco = dto.Endereco;
         usuario.Bairro = dto.Bairro;
@@ -52,7 +50,6 @@ public static class UsuarioMapper
             DataNascimento = usuario.DataNascimento ?? DateTime.MinValue,
             Cpf = usuario.Cpf,
             Cep = usuario.Cep,
-            ativo = usuario.ativo,
             Estado = usuario.Estado,
             Endereco = usuario.Endereco,
             Bairro = usuario.Bairro,
@@ -73,7 +70,6 @@ public static class UsuarioMapper
             Password = string.Empty, 
             Cpf = usuario?.Cpf,
             Cep = usuario?.Cep,
-            ativo = usuario.ativo,
             Estado = usuario.Estado,
             Endereco = usuario.Endereco,
             Bairro = usuario.Bairro,
@@ -95,7 +91,6 @@ public static class UsuarioMapper
             DataNascimento = usuario.DataNascimento ?? DateTime.MinValue,
             Cpf = usuario.Cpf,
             Cep = usuario.Cep,
-            ativo = usuario.ativo,
             Estado = usuario.Estado,
             Endereco = usuario.Endereco,
             Bairro = usuario.Bairro,
@@ -112,7 +107,6 @@ public static class UsuarioMapper
         usuario.DataNascimento = dto.DataNascimento;
         usuario.Cpf = dto.Cpf;
         usuario.Cep = dto.Cep;
-        usuario.ativo = dto.ativo;
         usuario.Estado = dto.Estado;
         usuario.Endereco = dto.Endereco;
         usuario.Bairro = dto.Bairro;

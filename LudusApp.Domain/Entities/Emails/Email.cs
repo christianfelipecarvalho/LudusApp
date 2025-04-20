@@ -19,7 +19,7 @@ public class Email
     public Email()
     {
         Id = Guid.NewGuid();
-        Status = EnumStatusEmail.NAOENVIADO; // Status inicial
+        Status = EnumStatusEmail.NAOENVIADO; 
         DataEnvio = DateTime.MinValue;
     }
 }

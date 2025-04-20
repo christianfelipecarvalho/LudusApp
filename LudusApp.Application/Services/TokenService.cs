@@ -15,6 +15,7 @@ public class TokenService
         {
 
             new Claim("username", usuario.UserName),
+            new Claim("tenant_id", usuario.TenantId.ToString()),
             new Claim("id", usuario.Id),
             new Claim(ClaimTypes.DateOfBirth, usuario.DataNascimento.ToString())
         };

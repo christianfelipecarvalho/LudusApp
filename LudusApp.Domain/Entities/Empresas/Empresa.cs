@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using LudusApp.Domain.Entities;
 using LudusApp.Domain.Entities.VinculosUsuarioEmpresa;
 using LudusApp.Domain.Enums;
 
 namespace LudusApp.Domain.Empresas;
 
-public class Empresa
+public class Empresa : EntidadeBase
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -52,8 +53,9 @@ public class Empresa
     public string UsuarioCriacao { get; set; } // Nome do usuário que criou a empresa
     public string UsuarioUltimaAlteracao { get; set; }
 
+    [Required(ErrorMessage = "TenantId é obrigatório.")]
     [Column("TenantId")]
-    public Guid? TenantId { get; set; } // Suporte ao TenantId (opcional)
+    public Guid TenantId { get; set; } 
 
 
     // Relação com Usuario

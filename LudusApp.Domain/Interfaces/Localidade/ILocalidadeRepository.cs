@@ -1,4 +1,6 @@
 ﻿using LudusApp.Domain.Entities.Localidades;
+using LudusApp.Domain.Entities.Localidades.Cidade;
+using LudusApp.Domain.Entities.Localidades.Estado;
 using LudusApp.Domain.Interfaces.Base;
 
 namespace LudusApp.Domain.Interfaces;
@@ -34,4 +36,6 @@ public interface ILocalidadeRepository : IRepositoryBase<Estado>
     /// <returns></returns>
     Task<List<Cidade>> BuscarCidadesPorNomeAsync(string nome);
     Task<Estado> BuscarEstadoPorSiglaAsync(string uf);
+    Task AddCidadeAsync(Cidade cidade);
+    Task UpdateCidadeAsync(Cidade cidade);
 }

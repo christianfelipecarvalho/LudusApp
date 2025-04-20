@@ -24,7 +24,7 @@ public class EmailService
     public async Task EnviarEmailAsync(Guid configuracaoId, string destinatario, string tipoTemplate,
         Dictionary<string, string> substituicoes)
     {
-        var configuracao = await _configuracaoRepository.ObterPorIdAsync(configuracaoId);
+        var configuracao = await _configuracaoRepository.RecuperaPorIdAsync(configuracaoId);
         if (configuracao == null)
         {
             throw new ApplicationException("Configuração de email não encontrada.");

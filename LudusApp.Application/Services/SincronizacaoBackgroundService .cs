@@ -17,7 +17,7 @@ public class SincronizacaoBackgroundService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var atrasoInicial = TimeSpan.FromDays(20);
+        var atrasoInicial = TimeSpan.FromDays(30);
         await Task.Delay(atrasoInicial, stoppingToken);
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -28,7 +28,7 @@ public class SincronizacaoBackgroundService : BackgroundService
             }
 
             // Aguarda 1 mês
-            await Task.Delay(TimeSpan.FromDays(30), stoppingToken);
+            await Task.Delay(TimeSpan.FromDays(90), stoppingToken);
         }
     }
 }

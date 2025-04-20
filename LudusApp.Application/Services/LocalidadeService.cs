@@ -1,31 +1,38 @@
 ﻿using System.Text.Json;
 using LudusApp.Application.Dtos.Localidades;
+using LudusApp.Application.Interfaces.ReadOnly.Localidade;
 using LudusApp.Application.Mappers;
 using LudusApp.Domain.Entities.Localidades;
+using LudusApp.Domain.Entities.Localidades.Cidade;
+using LudusApp.Domain.Entities.Localidades.Estado;
 using LudusApp.Domain.Interfaces;
-using LudusApp.Infra.Data;
+using Microsoft.Extensions.Logging;
 
 namespace LudusApp.Application.Services;
 
 public class LocalidadeService
 {
     private readonly HttpClient _httpClient;
-    private readonly LudusAppContext _dbContext;
     private readonly ILocalidadeRepository _localidadeRepository;
+    private readonly ILocalidadeReadRepository _localidadeReadRepository;
+    private readonly ILogger<LocalidadeService> _logger;
 
+    
 
-    public LocalidadeService(HttpClient httpClient, LudusAppContext dbContext, ILocalidadeRepository localidadeRepository)
+    public LocalidadeService(HttpClient httpClient, ILocalidadeRepository localidadeRepository,
+        ILocalidadeReadRepository localidadeReadRepository, ILogger<LocalidadeService> logger)
     {
         _httpClient = httpClient;
-        _dbContext = dbContext;
         _localidadeRepository = localidadeRepository;
-
+        _localidadeReadRepository = localidadeReadRepository;
+        _logger = logger;
     }
 
     public async Task SincronizarLocalidadesAsync()
     {
         try
         {
+            _logger.LogInformation("Inicia SincronizarLocalidadesAsync");
             // Buscar estados
             var response = await _httpClient.GetAsync("https://servicodados.ibge.gov.br/api/v1/localidades/estados");
             response.EnsureSuccessStatusCode();
@@ -48,22 +55,22 @@ public class LocalidadeService
                         Nome = estadoDto.Nome
                     };
 
-                    var estadoExistente = await _dbContext.Estados.FindAsync(estado.Id);
+                    var estadoExistente = await _localidadeRepository.RecuperaPorIdIntAsync(estado.Id);
 
                     if (estadoExistente == null)
                     {
-                        _dbContext.Estados.Add(estado);
+                        await _localidadeRepository.AddAsync(estado);
                     }
                     else if (estadoExistente.Nome != estado.Nome || estadoExistente.Sigla != estado.Sigla)
                     {
                         estadoExistente.Nome = estado.Nome;
                         estadoExistente.Sigla = estado.Sigla;
+                        await _localidadeRepository.UpdateAsync(estadoExistente);
                     }
 
-                    await _dbContext.SaveChangesAsync();
-
                     // Buscar cidades
-                    var responseCidades = await _httpClient.GetAsync($"https://servicodados.ibge.gov.br/api/v1/localidades/estados/{estado.Sigla}/municipios");
+                    var responseCidades = await _httpClient.GetAsync(
+                        $"https://servicodados.ibge.gov.br/api/v1/localidades/estados/{estado.Sigla}/municipios");
                     responseCidades.EnsureSuccessStatusCode();
 
                     var jsonCidades = await responseCidades.Content.ReadAsStringAsync();
@@ -76,7 +83,7 @@ public class LocalidadeService
                     {
                         try
                         {
-                            var cidadeExistente = await _dbContext.Cidades.FindAsync(cidadeDto.Id);
+                            var cidadeExistente = await _localidadeRepository.ObterCidadesPorId(cidadeDto.Id);
                             if (cidadeExistente == null)
                             {
                                 var cidade = new Cidade
@@ -86,73 +93,90 @@ public class LocalidadeService
                                     EstadoId = estado.Id
                                 };
 
-                                _dbContext.Cidades.Add(cidade);
+                                await _localidadeRepository.AddCidadeAsync(cidade);
                             }
                             else if (cidadeExistente.Nome != cidadeDto.Nome)
                             {
                                 cidadeExistente.Nome = cidadeDto.Nome;
+                                await _localidadeRepository.UpdateCidadeAsync(cidadeExistente);
                             }
-
-                            await _dbContext.SaveChangesAsync();
-
-
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Erro ao processar cidade. Detalhes: {ex.Message}");
+                            _logger.LogError($"Erro ao processar cidade. Detalhes: {ex.Message}");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Erro ao processar estado. Detalhes: {ex.Message}");
+                    _logger.LogError($"Erro ao processar estado. Detalhes: {ex.Message}");
                 }
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro geral ao sincronizar localidades. Detalhes: {ex.Message}");
+            _logger.LogError($"Erro geral ao sincronizar localidades. Detalhes: {ex.Message}");
         }
     }
+
+    #region Estado
+
     public async Task<List<EstadoDto>> ObterTodosEstadosAsync()
     {
-        var estados = await _localidadeRepository.ObterTodosAsync();
+        _logger.LogInformation("Iniciando busca todos os estados");
+        var estados = await _localidadeRepository.RecuperaTodosAsync();
         return estados.Select(EstadoMapper.ToDto).ToList();
     }
 
     public async Task<EstadoDto> ObterEstadoPorIdAsync(int id)
     {
-        var estado = await _localidadeRepository.ObterPorIdIntAsync(id);
+        _logger.LogInformation("Iniciando busca de estado por id");
+        var estado = await _localidadeRepository.RecuperaPorIdIntAsync(id);
         if (estado == null)
         {
             throw new Exception($"Estado com ID {id} não foi encontrado.");
         }
+
         return EstadoMapper.ToDto(estado);
     }
 
-
-    public async Task<List<CidadeDto>> ObterCidadesComPaginacaoAsync(int pagina, int tamanhoPagina)
-    {
-        var cidades = await _localidadeRepository.ObterCidadesComPaginacaoAsync(pagina, tamanhoPagina);
-        return cidades.Select(CidadeMapper.ToDto).ToList();
-    }
     public async Task<List<EstadoDto>> ObterEstadoPorNome(string nome)
     {
         var estado = await _localidadeRepository.BuscarEstadosPorNomeAsync(nome);
 
         return estado.Select(EstadoMapper.ToDto).ToList();
     }
+
+    #endregion
+
+    #region Cidade
+
+    public async Task<List<CidadeDto>> ObterCidadesComPaginacaoAsync(int pagina, int tamanhoPagina)
+    {
+        var cidades = await _localidadeReadRepository.ObterCidadesComEstadoPaginadoAsync(pagina, tamanhoPagina);
+
+        if (cidades == null || !cidades.Any()) 
+            return new List<CidadeDto>();
+
+        return cidades.Select(c => new CidadeDto
+        {
+            Id = c.Id,
+            Nome = c.Nome,
+            EstadoId = c.EstadoId,
+            EstadoNome = c.EstadoNome
+        }).ToList();
+    }
+
     public async Task<CidadeDto> ObterCidadePorIdAsync(int id)
     {
-        var cidade = await _localidadeRepository.ObterCidadesPorId(id);
+        var cidade = await _localidadeReadRepository.RecuperaPorIdTipoInt(id);
 
         if (cidade == null)
         {
             throw new KeyNotFoundException($"Cidade com ID {id} não encontrada.");
         }
 
-        // Buscar o estado associado
-        var estado = await _localidadeRepository.ObterPorIdIntAsync(cidade.EstadoId);
+        var estado = await _localidadeRepository.RecuperaPorIdIntAsync(cidade.EstadoId);
 
         return new CidadeDto
         {
@@ -162,9 +186,10 @@ public class LocalidadeService
             EstadoNome = estado?.Nome
         };
     }
-    public async Task<List<CidadeDto>> ObterCidadePorNome(string nome)
+
+
+    public async Task<List<CidadeDto>> ObterCidadePorNomeAsync(string nome)
     {
-        // Busca as cidades pelo nome
         var cidades = await _localidadeRepository.BuscarCidadesPorNomeAsync(nome);
 
         if (cidades == null || !cidades.Any())
@@ -172,79 +197,105 @@ public class LocalidadeService
             throw new KeyNotFoundException($"Nenhuma cidade encontrada com o nome {nome}.");
         }
 
-        var cidadesDto = new List<CidadeDto>();
-
-        foreach (var cidade in cidades)
+        return cidades.Select(c => new CidadeDto
         {
-            // Busca o estado associado à cidade
-            var estado = await _localidadeRepository.ObterPorIdIntAsync(cidade.EstadoId);
+            Id = c.Id,
+            Nome = c.Nome,
+            EstadoId = c.EstadoId,
+            EstadoNome = _localidadeRepository.RecuperaPorIdIntAsync(c.EstadoId).Result?.Nome ?? throw new InvalidOperationException()
+        }).ToList();
+    }
 
-            // Adiciona os dados da cidade e estado ao DTO
-            cidadesDto.Add(new CidadeDto
-            {
-                Id = cidade.Id,
-                Nome = cidade.Nome,
-                EstadoId = cidade.EstadoId,
-                EstadoNome = estado?.Nome
-            });
+    public async Task<List<CidadeDto>> ObterCidadePeloIdEstadoAsync(int idEstado, int pagina, int tamanhoPagina)
+    {
+        var cidades = await _localidadeReadRepository.ObterCidadesPorEstadoIdAsync(idEstado, pagina, tamanhoPagina);
+
+        if (cidades == null || !cidades.Any())
+        {
+            throw new KeyNotFoundException($"Nenhuma cidade encontrada com estadoId = {idEstado}.");
         }
 
-        return cidadesDto;
+        return cidades.Select(c => new CidadeDto
+        {
+            Id = c.Id,
+            Nome = c.Nome,
+            EstadoId = c.EstadoId,
+            EstadoNome = c.EstadoNome
+        }).ToList();
     }
+
+    public async Task<List<CidadeDto>> ObterCidadePeloNomeEstadoAsync(string nomeEstado, int pagina, int tamanhoPagina)
+    {
+        var cidades =
+            await _localidadeReadRepository.ObterCidadesPorEstadoPeloNomeAsync(nomeEstado, pagina, tamanhoPagina);
+
+        if (cidades == null || !cidades.Any())
+        {
+            throw new KeyNotFoundException($"Nenhuma cidade encontrada com o Estado = {nomeEstado}.");
+        }
+
+        return cidades.Select(c => new CidadeDto
+        {
+            Id = c.Id,
+            Nome = c.Nome,
+            EstadoId = c.EstadoId,
+            EstadoNome = c.EstadoNome
+        }).ToList();
+    }
+
+    #endregion
+
+    #region CEP
 
     public async Task<BuscaCepDto> BuscarPorCepAsync(string cep)
     {
-        // Verifica se o CEP é válido
         if (string.IsNullOrWhiteSpace(cep) || cep.Length != 8)
         {
             throw new ArgumentException("CEP inválido.");
         }
 
-        // Consulta a API externa para buscar o CEP
         var response = await _httpClient.GetAsync($"https://viacep.com.br/ws/{cep}/json/");
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception("Erro ao buscar informações do CEP na API externa.");
         }
 
-        var cepData = JsonSerializer.Deserialize<ViaCepDto>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
+        var cepData = JsonSerializer.Deserialize<ViaCepDto>(await response.Content.ReadAsStringAsync(),
+            new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
 
         if (cepData == null || string.IsNullOrWhiteSpace(cepData.Localidade) || string.IsNullOrWhiteSpace(cepData.Uf))
         {
             throw new Exception("Informações do CEP não encontradas.");
         }
 
-        // Busca cidade no banco pelo nome retornado pela API externa
-        var cidade = await _localidadeRepository.BuscarCidadesPorNomeAsync(cepData.Localidade);
-        var cidades = cidade.FirstOrDefault();
+        var cidade = (await _localidadeRepository.BuscarCidadesPorNomeAsync(cepData.Localidade)).FirstOrDefault();
 
         if (cidade == null)
         {
             throw new KeyNotFoundException($"Cidade não encontrada para o nome: {cepData.Localidade}");
         }
 
-        // Busca estado no banco pela UF retornada pela API externa
         var estado = await _localidadeRepository.BuscarEstadoPorSiglaAsync(cepData.Uf);
         if (estado == null)
         {
             throw new KeyNotFoundException($"Estado não encontrado para a UF: {cepData.Uf}");
         }
 
-        // Retorna as informações em um DTO
         return new BuscaCepDto
         {
             Cep = cepData.Cep,
             Logradouro = cepData.Logradouro,
             Complemento = cepData.Complemento,
             Bairro = cepData.Bairro,
-            CidadeId = cidades.Id,
-            CidadeNome = cidades.Nome,
+            CidadeId = cidade.Id,
+            CidadeNome = cidade.Nome,
             EstadoId = estado.Id,
-            EstadoNome = estado.Nome,
+            EstadoNome = estado.Nome
         };
     }
 
+    #endregion
 }

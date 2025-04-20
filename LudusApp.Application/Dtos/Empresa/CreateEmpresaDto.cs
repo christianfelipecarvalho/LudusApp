@@ -45,8 +45,11 @@ public class CreateEmpresaDto
     public DateTime DataUltimaAlteracao { get; set; }
     public string UsuarioCriacao { get; set; } // Nome do usuário que criou a empresa
     public string UsuarioUltimaAlteracao { get; set; }
+    
+    [Required(ErrorMessage = "TenantId é obrigatório.")]
     [Column("TenantId")]
-    public Guid? TenantId { get; set; } // Suporte ao TenantId (opcional)
+    public Guid TenantId { get; set; }  // Se for obrigatório, remova o '?'
+
 
 
 }

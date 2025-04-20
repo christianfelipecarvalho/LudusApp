@@ -31,7 +31,6 @@ public class CreateUsuarioDto
 
     [RegularExpression(@"^\d{5}-\d{3}$", ErrorMessage = "O CEP deve estar no formato 00000-000")]
     public string? Cep { get; set; }
-    public bool ativo { get; set; }
     public string? Estado { get; set; }
 
     public string? Endereco { get; set; }

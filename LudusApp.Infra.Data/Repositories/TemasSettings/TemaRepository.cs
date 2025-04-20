@@ -18,11 +18,17 @@ namespace LudusApp.Infra.Data.Repositories.TemasSettings
             _dbConnection = context.Database.GetDbConnection(); // EF
         }
 
-        public override async Task<Tema> ObterPorIdAsync(Guid id)
+        public override async Task<Tema> RecuperaPorIdAsync(object id)
         {
             string sql = "SELECT * FROM public.\"Tema\" WHERE \"Cnpj\" = @Id";
             return await _dbConnection.QueryFirstOrDefaultAsync<Tema>(sql, new { Id = id });
         }
 
+
+        public async Task<Tema> RecuperaPorIdUsuario(string id)
+        {
+            string sql = "SELECT * FROM public.\"Temas\" WHERE \"UsuarioId\" = @Id";
+            return await _dbConnection.QueryFirstOrDefaultAsync<Tema>(sql, new { Id = id });
+        }
     }
 }

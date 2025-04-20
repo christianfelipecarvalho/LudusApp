@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LudusApp.Domain\LudusApp.Domain.csproj" />
-    <ProjectReference Include="..\LudusApp.Infra.Data\LudusApp.Infra.Data.csproj" />
   </ItemGroup>
 
 </Project>

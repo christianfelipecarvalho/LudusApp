@@ -6,7 +6,7 @@ using LudusApp.Domain.Enums;
 using LudusApp.Domain.Interfaces;
 using LudusApp.Domain.Interfaces.VinculoUsuarioEmpresa;
 using LudusApp.Domain.Usuarios;
-using LudusApp.Infrastructure.Repositories;
+
 using Microsoft.AspNetCore.Identity;
 
 public class EmpresaService
@@ -27,13 +27,13 @@ public class EmpresaService
 
     public async Task<List<ReadEmpresaDto>> BuscarTodas()
     {
-        var empresas = await _empresaRepository.ObterTodosAsync();
+        var empresas = await _empresaRepository.RecuperaTodosAsync();
         return empresas.Select(e => e.ToReadDto()).ToList();
     }
 
     public async Task<ReadEmpresaDto> BuscarPorId(Guid id)
     {
-        var empresa = await _empresaRepository.ObterPorIdAsync(id);
+        var empresa = await _empresaRepository.RecuperaPorIdAsync(id);
         if (empresa == null)
         {
             throw new ApplicationException("Empresa não encontrada.");
@@ -104,7 +104,7 @@ public class EmpresaService
     }
     public async Task Atualizar(Guid id, UpdateEmpresaDto empresaDto)
     {
-        var empresaExistente = await _empresaRepository.ObterPorIdAsync(id);
+        var empresaExistente = await _empresaRepository.RecuperaPorIdAsync(id);
         if (empresaExistente == null)
         {
             throw new ApplicationException("Empresa não encontrada.");

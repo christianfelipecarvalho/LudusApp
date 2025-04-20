@@ -1,5 +1,9 @@
 using Hangfire;
 using LudusApp.Application.Services;
+using Serilog;
+using Serilog.Formatting.Compact;
+using Serilog.Sinks.Http;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,8 +13,9 @@ builder.WebHost.UseUrls("http://0.0.0.0:80")
         serverOptions.Limits.KeepAliveTimeout = TimeSpan.FromDays(365);
     });
 
-builder.Services.AddHttpClient();
-builder.Services.ConfigureServices(builder.Configuration)
+builder.Services
+    .AddHttpClient()
+    .ConfigureServices(builder.Configuration)
     .ConfigureSwagger()
     .ConfigureAuthentication(builder.Configuration)
     .ConfigureAuthorization();
@@ -30,11 +35,25 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+
+
 app.UseHangfireDashboard();
 RecurringJob.AddOrUpdate<LocalidadeService>(
     "SincronizarLocalidades",
     service => service.SincronizarLocalidadesAsync(),
     Cron.Monthly);
+
+var logger = new LoggerConfiguration()
+    .WriteTo.File(
+        path: "logs/log-.txt",
+        rollingInterval: RollingInterval.Day,
+        formatter: new CompactJsonFormatter()) 
+    .CreateLogger();
+
+logger.Information("Aplicação iniciada com sucesso!");
+logger.Error("Erro ao processar requisição.");
+
+
 
 app.UseSwagger();
 app.UseSwaggerUI();

@@ -51,6 +51,7 @@ public static class AuthConfiguration
         services.AddAuthorization(options =>
         {
             options.AddPolicy("IdadeMinima", policy => policy.AddRequirements(new IdadeMinima(18)));
+            // options.AddPolicy("SomenteEmpresa", policy => policy.AddRequirements(new EmpresaRequirement()));
         });
 
         return services;

@@ -21,8 +21,9 @@ public class UsuarioService
     private readonly TokenService _tokenService;
     private readonly UsuarioDomainService _usuarioDomainService;
     private readonly EmailService _emailService;
+    private readonly TemaService _temaService;
 
-    public UsuarioService(UserManager<Usuario> userManager, IMapper mapper, SignInManager<Usuario> signInManager, TokenService tokenService, UsuarioDomainService usuarioDomainService, EmailService emailService)
+    public UsuarioService(UserManager<Usuario> userManager, IMapper mapper, SignInManager<Usuario> signInManager, TokenService tokenService, UsuarioDomainService usuarioDomainService, EmailService emailService, TemaService temaService)
     {
         _userManager = userManager;
         _mapper = mapper;
@@ -30,12 +31,14 @@ public class UsuarioService
         _tokenService = tokenService;
         _usuarioDomainService = usuarioDomainService;
         _emailService = emailService;
+        _temaService = temaService;
     }
 
     public async Task Cadastra(CreateUsuarioDto usuarioDto, Guid? empresaId = null)
     {
         // Verifica duplicidades de email, username e CPF em uma única consulta
         var duplicados = await _userManager.Users
+            .AsNoTracking()
             .Where(u => u.Email == usuarioDto.Email || u.UserName == usuarioDto.UserName || u.Cpf == usuarioDto.Cpf)
             .ToListAsync();
 
@@ -68,6 +71,9 @@ public class UsuarioService
             string erros = string.Join(", ", resultado.Errors.Select(e => e.Description));
             throw new ApplicationException($"Falha ao cadastrar usuário: {erros}");
         }
+        
+        await _temaService.CriarUsuarioComTemaPadrao(usuario.Id);
+        
         // Enviar e-mail de boas-vindas
         var substituicoes = new Dictionary<string, string>
     {
@@ -258,7 +264,6 @@ public class UsuarioService
                     DataNascimento = DateTime.MinValue,
                     Cpf = "000.000.000-00",
                     GoogleId = googleId,
-                    ativo = true
                 };
 
                 var resultado = await _userManager.CreateAsync(usuario);
@@ -284,7 +289,6 @@ public class UsuarioService
             Email = empresaDto.Email,
             Cpf = empresaDto.cpfUsuario,
             DataNascimento = empresaDto.DataNascimentoUsuario,
-            ativo = true, // Define que o usuário estará ativo
             TenantId = empresaDto.TenantId
         };
 

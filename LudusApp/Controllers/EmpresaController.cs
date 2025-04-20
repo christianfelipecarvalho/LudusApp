@@ -2,6 +2,9 @@
 using LudusApp.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
+/// <summary>
+/// Controlador para cadastro edição e alteração de dados da empresa
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class EmpresaController : ControllerBase

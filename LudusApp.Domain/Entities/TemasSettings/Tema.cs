@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using LudusApp.Domain.Usuarios;
+using LudusApp.Domain.Entities;
 
 namespace LudusApp.Domain.TemaSettings;
 
-public class Tema
+public class Tema : EntidadeBase
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
