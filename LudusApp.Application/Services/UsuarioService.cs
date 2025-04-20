@@ -10,6 +10,7 @@ using LudusApp.Domain.Usuarios;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace LudusApp.Application.Services;
 
@@ -87,8 +88,6 @@ public class UsuarioService
                                              substituicoes: substituicoes);
 
     }
-
-
 
     public async Task Edita(UpdateUsuarioDto usuarioDto, Guid? empresaId = null)
     {
@@ -284,16 +283,16 @@ public class UsuarioService
         // Criar a entidade do usuário
         var novoUsuario = new Usuario
         {
-            Nome = empresaDto.NomeUsuario,
-            UserName = empresaDto.Email,
-            Email = empresaDto.Email,
-            Cpf = empresaDto.cpfUsuario,
-            DataNascimento = empresaDto.DataNascimentoUsuario,
-            TenantId = empresaDto.TenantId
+            Nome = empresaDto?.NomeUsuario,
+            UserName = empresaDto?.Email,
+            Email = empresaDto?.Email,
+            Cpf = empresaDto?.cpfUsuario,
+            DataNascimento = empresaDto?.DataNascimentoUsuario,
+            TenantId = empresaDto?.TenantId
         };
 
         // Gerar senha temporária
-        var resultado = await _userManager.CreateAsync(novoUsuario, empresaDto.SenhaTemporaria);
+        var resultado = await _userManager.CreateAsync(novoUsuario, empresaDto?.SenhaTemporaria);
 
         if (!resultado.Succeeded)
         {
@@ -319,6 +318,23 @@ public class UsuarioService
             throw new ApplicationException($"Erro ao atualizar usuário: {erros}");
         }
         return usuarioId;
+    }
+
+
+    public async Task<string> RedefinirSenha(string userId, string token, string novaSenha)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+            throw new ApplicationException("Usuário não encontrado.");
+
+        var result = await _userManager.ResetPasswordAsync(user, token, novaSenha);
+
+        if (result.Succeeded)
+            return "Senha redefinida com sucesso!";
+
+        // Concatena os erros, caso exista falha
+        var erros = string.Join(", ", result.Errors.Select(e => e.Description));
+        throw new ApplicationException($"Erro ao redefinir a senha: {erros}");
     }
 
 }

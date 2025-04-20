@@ -105,4 +105,19 @@ public class UsuarioController : ControllerBase
 
         return Ok(usuarioAtualizado);
     }
+    
+    [HttpPost("redefinir-senha")]
+    public async Task<IActionResult> RedefinirSenha([FromBody] RedefinirSenhaUsuarioDto dto)
+    {
+        try
+        {
+            var msg = await _usuarioService.RedefinirSenha(dto.UserId, dto.Token, dto.NovaSenha);
+            return Ok(msg);
+        }
+        catch (ApplicationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
 }

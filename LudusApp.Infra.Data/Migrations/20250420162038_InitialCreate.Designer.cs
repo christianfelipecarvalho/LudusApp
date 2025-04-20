@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace LudusApp.Migrations
+namespace LudusApp.Infra.Data.Migrations
 {
     [DbContext(typeof(LudusAppContext))]
-    [Migration("20250420041643_UltimasAlteracoes2004")]
-    partial class UltimasAlteracoes2004
+    [Migration("20250420162038_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

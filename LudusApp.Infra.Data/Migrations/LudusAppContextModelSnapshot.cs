@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace LudusApp.Migrations
+namespace LudusApp.Infra.Data.Migrations
 {
     [DbContext(typeof(LudusAppContext))]
     partial class LudusAppContextModelSnapshot : ModelSnapshot
