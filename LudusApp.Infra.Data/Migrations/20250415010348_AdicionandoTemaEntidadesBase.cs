@@ -10,27 +10,41 @@ namespace LudusApp.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
-                name: "UsuarioCadastro",
-                table: "AspNetUsers",
-                type: "text",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "text");
+            // Verifica se a coluna já existe antes de tentar alterá-la
+            migrationBuilder.Sql(@"
+                DO $$
+                BEGIN
+                    IF NOT EXISTS (
+                        SELECT 1 
+                        FROM information_schema.columns 
+                        WHERE table_name = 'AspNetUsers' 
+                          AND column_name = 'UsuarioCadastro'
+                    ) THEN
+                        ALTER TABLE ""AspNetUsers"" ADD ""UsuarioCadastro"" text;
+                    ELSE
+                        ALTER TABLE ""AspNetUsers"" ALTER COLUMN ""UsuarioCadastro"" DROP NOT NULL;
+                    END IF;
+                END $$;
+            ");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
-                name: "UsuarioCadastro",
-                table: "AspNetUsers",
-                type: "text",
-                nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "text",
-                oldNullable: true);
+            // No método Down, revertendo a alteração para "NOT NULL"
+            migrationBuilder.Sql(@"
+                DO $$
+                BEGIN
+                    IF EXISTS (
+                        SELECT 1 
+                        FROM information_schema.columns 
+                        WHERE table_name = 'AspNetUsers' 
+                          AND column_name = 'UsuarioCadastro'
+                    ) THEN
+                        ALTER TABLE ""AspNetUsers"" ALTER COLUMN ""UsuarioCadastro"" SET NOT NULL;
+                    END IF;
+                END $$;
+            ");
         }
     }
 }

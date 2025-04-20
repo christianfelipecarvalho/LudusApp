@@ -39,6 +39,7 @@ public static class ServiceConfiguration
     {
         var connectionString = Environment.GetEnvironmentVariable("LUDUSAPP_DB")
                                ?? configuration.GetConnectionString("LudusDevelopment");
+        // var connectionString = configuration.GetConnectionString("LudusAppContext");
 
         services.AddHangfire(config => { config.UsePostgreSqlStorage(connectionString); });
         services.AddHangfireServer();
