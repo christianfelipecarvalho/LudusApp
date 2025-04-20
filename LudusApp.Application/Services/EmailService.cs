@@ -121,7 +121,8 @@ public class EmailService
         if (await _userManager.IsEmailConfirmedAsync(user))
             return "E-mail já confirmado anteriormente.";
         
-        var urlBase = _configuration["Email:UrlBaseConfirmacao"];
+        var urlBase = Environment.GetEnvironmentVariable("LUDUSAPP_URL_CONFIRMACAO_EMAIL")
+                      ?? _configuration["Email:UrlBaseConfirmacao"];
             
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         
@@ -150,7 +151,9 @@ public class EmailService
             throw new ApplicationException("Usuário não encontrado.");
 
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        var urlBase = _configuration["Email:UrlBaseRecuperacaoSenha"]; // ex: https://localhost:3000/resetar-senha
+        var urlBase =Environment.GetEnvironmentVariable("LUDUSAPP_URL_CONFIRMACAO_EMAIL")
+                     ?? _configuration["Email:UrlBaseRecuperacaoSenha"];
+        
         var link = $"{urlBase}?userId={user.Id}&token={Uri.EscapeDataString(token)}";
 
         var substituicoes = new Dictionary<string, string>
